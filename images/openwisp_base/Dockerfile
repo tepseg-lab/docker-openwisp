@@ -14,7 +14,15 @@ RUN apt-get update && \
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends \
     gcc libpq-dev libjpeg-dev libffi-dev python3-dev \
-    python3-pip libxml2-dev libxslt1-dev zlib1g-dev g++ procps
+    python3-pip libxml2-dev libxslt1-dev zlib1g-dev g++ procps \
+    git ssh
+
+RUN mkdir -p -m 0600 /root/.ssh /root/.ssh && \
+        ssh-keyscan github.com >> /root/.ssh/known_hosts
+
+ADD id_rsa /root/.ssh/id_rsa
+
+RUN chmod -R 400 /root/.ssh/id_rsa
 
 RUN useradd --system --password '' --create-home --shell /bin/bash \
     --gid root --uid 1001 openwisp
@@ -65,7 +73,7 @@ RUN if [ "$OPENWISP_USERS_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade --force-reinstall ${OPENWISP_USERS_SOURCE}; \
     fi
 # TODO: Remove when next version of openwisp-utils is released
-ARG OPENWISP_UTILS_SOURCE="openwisp-utils[celery,rest] @ https://github.com/openwisp/openwisp-utils/tarball/9fd347fb861af674674a4bcc59c54bcdeef18b8c "
+ARG OPENWISP_UTILS_SOURCE="openwisp-utils[celery,rest] @ git+ssh://git@github.com/tepseg-lab/openwisp-utils.git@main "
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_UTILS_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade --force-reinstall "${OPENWISP_UTILS_SOURCE}"; \
