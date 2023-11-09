@@ -2,7 +2,7 @@ version: "3"
 
 services:
   dashboard:
-    image: openwisp/openwisp-dashboard:latest
+    image: openwisp/openwisp-dashboard:latest.
     restart: always
     build:
       context: images
