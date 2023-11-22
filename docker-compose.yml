@@ -105,7 +105,7 @@ services:
       - dashboard
 
   nginx:
-    image: openwisp/openwisp-nginx:latest
+    image: openwisp/openwisp-nginx:1.24-alpine-slim
     restart: always
     build:
       context: images
@@ -174,15 +174,19 @@ services:
       - NET_ADMIN
 
   postgres:
-    image: mdillon/postgis:11-alpine
+    image: postgis/postgis:13-3.3-alpine
     restart: always
     environment:
       - POSTGRES_DB=$DB_NAME
       - POSTGRES_USER=$DB_USER
       - POSTGRES_PASSWORD=$DB_PASS
       - TZ=$TZ
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data
 
   influxdb:
     image: influxdb:1.8-alpine
@@ -191,6 +195,8 @@ services:
       - INFLUXDB_DB=$INFLUXDB_NAME
       - INFLUXDB_USER=$INFLUXDB_USER
       - INFLUXDB_USER_PASSWORD=$INFLUXDB_PASS
+    env_file:
+      - .env
     volumes:
       - influxdb_data:/var/lib/influxdb
 

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 function init_conf {
 	default_psql_vars

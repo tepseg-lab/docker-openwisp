@@ -2,7 +2,7 @@ FROM alpine:3.16
 
 WORKDIR /opt/openwisp/
 RUN apk add --no-cache --upgrade \
-            openssl~=1.1.1w-r0  \
+            openssl~=1.1.1w-r0 \
             cyrus-sasl~=2.1.28-r1	\
             cyrus-sasl-login~=2.1.28-r1 && \
     apk add --no-cache \
@@ -21,7 +21,7 @@ COPY ./common/init_command.sh \
 
 ENV MODULE_NAME=postfix \
     TZ=UTC \
-    POSTFIX_MYHOSTNAME=example.org \
+    POSTFIX_MYHOSTNAME=dashboard.openwisp.org \
     POSTFIX_ALLOWED_SENDER_DOMAINS=example.org \
     POSTFIX_RELAYHOST=null \
     POSTFIX_DESTINATION='$mydomain, $myhostname' \

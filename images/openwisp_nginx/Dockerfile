@@ -1,4 +1,4 @@
-FROM nginx:1.23.3-alpine
+FROM nginx:1.24-alpine-slim
 
 RUN apk add --update --no-cache \
             openssl~=3.0.12-r0 \
@@ -47,8 +47,8 @@ ENV MODULE_NAME=nginx \
     API_APP_SERVICE=api \
     WEBSOCKET_APP_SERVICE=websocket \
     # Listen domains
-    DASHBOARD_DOMAIN=dashboard.example.com \
-    API_DOMAIN=api.example.com \
+    DASHBOARD_DOMAIN=dashboard.openwisp.org \
+    API_DOMAIN=api.openwisp.org \
     # Inter container communication domains
     DASHBOARD_INTERNAL=dashboard.internal \
     API_INTERNAL=api.internal

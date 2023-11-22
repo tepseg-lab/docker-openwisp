@@ -160,7 +160,7 @@ setup_docker_openwisp() {
 			set_env "SSL_CERT_MODE" "Yes"
 		fi
 		# Other
-		hostname=$(echo "$django_default_email" | cut -d @ -f 2)
+		hostname=tepseg
 		set_env "POSTFIX_ALLOWED_SENDER_DOMAINS" "$hostname"
 		set_env "POSTFIX_MYHOSTNAME" "$hostname"
 	else

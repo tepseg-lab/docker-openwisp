@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # OpenWISP common module init script
 set -e
 source utils.sh

@@ -35,16 +35,16 @@ ENV PYTHONPATH=/home/openwisp/.local/lib/python3.10/site-packages
 
 RUN pip install --no-cache-dir  --user --upgrade pip~=23.0.1
 # TODO: Remove when next version of openwisp-monitoring is released
-ARG OPENWISP_MONITORING_SOURCE=https://github.com/openwisp/openwisp-monitoring/tarball/15977c74b48d846ac469316abc7f13ccbef405f0
+ARG OPENWISP_MONITORING_SOURCE=https://github.com/tepseg-lab/openwisp-monitoring.git
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_MONITORING_SOURCE}
-ARG OPENWISP_FIRMWARE_SOURCE=https://github.com/openwisp/openwisp-firmware-upgrader/tarball/9c7840c7436eb8b8cd5a63e83194041ccf887cd2
+ARG OPENWISP_FIRMWARE_SOURCE=https://github.com/tepseg-lab/openwisp-firmware-upgrader.git
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_FIRMWARE_SOURCE}
-ARG OPENWISP_TOPOLOGY_SOURCE=https://github.com/openwisp/openwisp-network-topology/tarball/ade4d5f844753879ccb54cce1d3528f17c55a490
+ARG OPENWISP_TOPOLOGY_SOURCE=https://github.com/tepseg-lab/openwisp-network-topology.git
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_TOPOLOGY_SOURCE}
-ARG OPENWISP_RADIUS_SOURCE=https://github.com/openwisp/openwisp-radius/tarball/1a748466c269df3548557d9d42df6bb886da4f57
+ARG OPENWISP_RADIUS_SOURCE=https://github.com/tepseg-lab/openwisp-radius.git
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_RADIUS_SOURCE}
 
@@ -57,7 +57,7 @@ RUN if [ "$OPENWISP_IPAM_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade ${OPENWISP_IPAM_SOURCE}; \
     fi
 # TODO: Remove when next version of openwisp-controller is released
-ARG OPENWISP_CONTROLLER_SOURCE=https://github.com/openwisp/openwisp-controller/tarball/3383bc11e5f8e9c89ebd9ac8aefa0066576d3133
+ARG OPENWISP_CONTROLLER_SOURCE=https://github.com/tepseg-lab/openwisp-controller.git
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_CONTROLLER_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade ${OPENWISP_CONTROLLER_SOURCE}; \
@@ -67,7 +67,7 @@ ARG OPENWISP_NOTIFICATION_SOURCE=default
 RUN if [ "$OPENWISP_NOTIFICATION_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade ${OPENWISP_NOTIFICATION_SOURCE}; \
     fi
-ARG OPENWISP_USERS_SOURCE=https://github.com/openwisp/openwisp-users/tarball/55023698cf39711585480be90c98d64ce5a04b8d
+ARG OPENWISP_USERS_SOURCE=https://github.com/tepseg-lab/openwisp-users.git
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_USERS_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade --force-reinstall ${OPENWISP_USERS_SOURCE}; \
@@ -130,7 +130,7 @@ ENV DASHBOARD_APP_SERVICE=dashboard \
     EMAIL_DJANGO_DEFAULT=example@example.org \
     DJANGO_LOG_LEVEL=ERROR \
     DJANGO_LANGUAGE_CODE=en-gb \
-    DJANGO_FREERADIUS_ALLOWED_HOSTS=172.18.0.0/16 \
+    DJANGO_FREERADIUS_ALLOWED_HOSTS=127.0.0.1,192.0.2.20,172.18.0.0/16 \
     DJANGO_X509_DEFAULT_CERT_VALIDITY=1825 \
     DJANGO_X509_DEFAULT_CA_VALIDITY=3650 \
     DJANGO_SECRET_KEY=DEFAULT_BAD_KEY \
