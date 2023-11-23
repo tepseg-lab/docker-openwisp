@@ -1,5 +1,5 @@
 # hadolint ignore=DL3007
-FROM openwisp/openwisp-base:latest
+FROM tepseg-lab/openwisp-base:latest
 
 WORKDIR /opt/openwisp/
 

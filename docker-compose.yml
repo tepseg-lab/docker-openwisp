@@ -2,7 +2,7 @@ version: "3"
 
 services:
   dashboard:
-    image: openwisp/openwisp-dashboard:latest
+    image: tepseg-lab/openwisp-dashboard:latest
     restart: always
     build:
       context: images
@@ -24,7 +24,7 @@ services:
       - influxdb
 
   api:
-    image: openwisp/openwisp-api:latest
+    image: tepseg-lab/openwisp-api:latest
     restart: always
     build:
       context: images
@@ -44,7 +44,7 @@ services:
       - dashboard
 
   websocket:
-    image: openwisp/openwisp-websocket:latest
+    image: tepseg-lab/openwisp-websocket:latest
     restart: always
     build:
       context: images
@@ -59,7 +59,7 @@ services:
       - dashboard
 
   celery:
-    image: openwisp/openwisp-dashboard:latest
+    image: tepseg-lab/openwisp-dashboard:latest
     restart: always
     environment:
       - MODULE_NAME=celery
@@ -75,7 +75,7 @@ services:
       - dashboard
 
   celery_monitoring:
-    image: openwisp/openwisp-dashboard:latest
+    image: tepseg-lab/openwisp-dashboard:latest
     restart: always
     environment:
       - MODULE_NAME=celery_monitoring
@@ -91,7 +91,7 @@ services:
       - dashboard
 
   celerybeat:
-    image: openwisp/openwisp-dashboard:latest
+    image: tepseg-lab/openwisp-dashboard:latest
     restart: always
     environment:
       - MODULE_NAME=celerybeat
@@ -105,7 +105,7 @@ services:
       - dashboard
 
   nginx:
-    image: openwisp/openwisp-nginx:1.24-alpine-slim
+    image: tepseg-lab/openwisp-nginx:1.24-alpine-slim
     restart: always
     build:
       context: images
@@ -132,7 +132,7 @@ services:
       - websocket
 
   freeradius:
-    image: openwisp/openwisp-freeradius:latest
+    image: tepseg-lab/openwisp-freeradius:latest
     restart: always
     build:
       context: images
@@ -148,7 +148,7 @@ services:
       - dashboard
 
   postfix:
-    image: openwisp/openwisp-postfix:latest
+    image: tepseg-lab/openwisp-postfix:latest
     restart: always
     build:
       context: images
@@ -159,7 +159,7 @@ services:
       - openwisp_certs:/etc/ssl/mail
 
   openvpn:
-    image: openwisp/openwisp-openvpn:latest
+    image: tepseg-lab/openwisp-openvpn:latest
     restart: always
     build:
       context: images
