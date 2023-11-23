@@ -73,7 +73,7 @@ RUN if [ "$OPENWISP_USERS_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade --force-reinstall ${OPENWISP_USERS_SOURCE}; \
     fi
 # TODO: Remove when next version of openwisp-utils is released
-ARG OPENWISP_UTILS_SOURCE="openwisp-utils[celery,rest] @ git+ssh://git@github.com/tepseg-labopenwisp/openwisp-utils.git@main"
+ARG OPENWISP_UTILS_SOURCE="openwisp-utils[celery,rest] @ git+ssh://git@github.com/tepseg-lab/openwisp-utils.git@main "
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_UTILS_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade --force-reinstall "${OPENWISP_UTILS_SOURCE}"; \
