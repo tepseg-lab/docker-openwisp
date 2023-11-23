@@ -35,16 +35,16 @@ ENV PYTHONPATH=/home/openwisp/.local/lib/python3.10/site-packages
 
 RUN pip install --no-cache-dir  --user --upgrade pip~=23.0.1
 # TODO: Remove when next version of openwisp-monitoring is released
-ARG OPENWISP_MONITORING_SOURCE=https://github.com/openwisp/openwisp-monitoring/tarball/15977c74b48d846ac469316abc7f13ccbef405f0
+ARG OPENWISP_MONITORING_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-monitoring.git@main
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_MONITORING_SOURCE}
-ARG OPENWISP_FIRMWARE_SOURCE=https://github.com/openwisp/openwisp-firmware-upgrader/tarball/9c7840c7436eb8b8cd5a63e83194041ccf887cd2
+ARG OPENWISP_FIRMWARE_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-firmware-upgrader.git@main
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_FIRMWARE_SOURCE}
-ARG OPENWISP_TOPOLOGY_SOURCE=https://github.com/openwisp/openwisp-network-topology/tarball/ade4d5f844753879ccb54cce1d3528f17c55a490
+ARG OPENWISP_TOPOLOGY_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-network-topology.git@main
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_TOPOLOGY_SOURCE}
-ARG OPENWISP_RADIUS_SOURCE=https://github.com/openwisp/openwisp-radius/tarball/1a748466c269df3548557d9d42df6bb886da4f57
+ARG OPENWISP_RADIUS_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-radius.git@main
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_RADIUS_SOURCE}
 
@@ -57,7 +57,7 @@ RUN if [ "$OPENWISP_IPAM_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade ${OPENWISP_IPAM_SOURCE}; \
     fi
 # TODO: Remove when next version of openwisp-controller is released
-ARG OPENWISP_CONTROLLER_SOURCE=https://github.com/openwisp/openwisp-controller/tarball/3383bc11e5f8e9c89ebd9ac8aefa0066576d3133
+ARG OPENWISP_CONTROLLER_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-controller.git@main
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_CONTROLLER_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade ${OPENWISP_CONTROLLER_SOURCE}; \
@@ -67,13 +67,13 @@ ARG OPENWISP_NOTIFICATION_SOURCE=default
 RUN if [ "$OPENWISP_NOTIFICATION_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade ${OPENWISP_NOTIFICATION_SOURCE}; \
     fi
-ARG OPENWISP_USERS_SOURCE=https://github.com/openwisp/openwisp-users/tarball/55023698cf39711585480be90c98d64ce5a04b8d
+ARG OPENWISP_USERS_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-users.git@main
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_USERS_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade --force-reinstall ${OPENWISP_USERS_SOURCE}; \
     fi
 # TODO: Remove when next version of openwisp-utils is released
-ARG OPENWISP_UTILS_SOURCE="openwisp-utils[celery,rest] @ https://github.com/openwisp/openwisp-utils/tarball/9fd347fb861af674674a4bcc59c54bcdeef18b8c "
+ARG OPENWISP_UTILS_SOURCE="openwisp-utils[celery,rest] @ git+ssh://git@github.com/tepseg-labopenwisp/openwisp-utils.git@main"
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_UTILS_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade --force-reinstall "${OPENWISP_UTILS_SOURCE}"; \
