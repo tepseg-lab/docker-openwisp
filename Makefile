@@ -7,7 +7,7 @@ SHELL := /bin/bash
 default: compose-build
 
 # Pull
-USER = registry.gitlab.com/openwisp/docker-openwisp
+USER = registry.gitlab.com/tepseg-lab1/docker-openwisp
 TAG  = latest
 pull:
 	printf '\e[1;34m%-6s\e[m\n' "Downloading OpenWISP images..."
@@ -15,7 +15,7 @@ pull:
 				 'openwisp-freeradius' 'openwisp-nginx' 'openwisp-openvpn' 'openwisp-postfix' \
 				 'openwisp-websocket' ; do \
 		docker pull --quiet $(USER)/$${image}:$(TAG) &> /dev/null; \
-		docker tag  $(USER)/$${image}:$(TAG) openwisp/$${image}:latest; \
+		docker tag  $(USER)/$${image}:$(TAG) tepseg-lab/$${image}:latest; \
 	done
 
 # Build
@@ -27,19 +27,19 @@ base-build:
 	for build_arg in $$BUILD_ARGS_FILE; do \
 	    BUILD_ARGS+=" --build-arg $$build_arg"; \
 	done; \
-	docker build --tag openwisp/openwisp-base:intermedia-system \
+	docker build --tag tepseg-lab/openwisp-base:intermedia-system \
 	             --file ./images/openwisp_base/Dockerfile \
 	             --target SYSTEM ./images/; \
-	docker build --tag openwisp/openwisp-base:intermedia-python \
+	docker build --tag tepseg-lab/openwisp-base:intermedia-python \
 	             --file ./images/openwisp_base/Dockerfile \
 	             --target PYTHON ./images/ \
 	             $$BUILD_ARGS; \
-	docker build --tag openwisp/openwisp-base:latest \
+	docker build --tag tepseg-lab/openwisp-base:latest \
 	             --file ./images/openwisp_base/Dockerfile ./images/ \
 	             $$BUILD_ARGS
 
 nfs-build:
-	docker build --tag openwisp/openwisp-nfs:latest \
+	docker build --tag tepseg-lab/openwisp-nfs:latest \
 	             --file ./images/openwisp_nfs/Dockerfile ./images/
 
 compose-build: base-build
@@ -64,15 +64,15 @@ clean:
 	docker-compose stop &> /dev/null
 	docker-compose down --remove-orphans --volumes --rmi all &> /dev/null
 	docker-compose rm -svf &> /dev/null
-	docker rmi --force openwisp/openwisp-base:latest \
-				openwisp/openwisp-base:intermedia-system \
-				openwisp/openwisp-base:intermedia-python \
-				openwisp/openwisp-nfs:latest \
+	docker rmi --force tepseg-lab/openwisp-base:latest \
+				tepseg-lab/openwisp-base:intermedia-system \
+				tepseg-lab/openwisp-base:intermedia-python \
+				tepseg-lab/openwisp-nfs:latest \
 				`docker images -f "dangling=true" -q` \
-				`docker images | grep openwisp/docker-openwisp | tr -s ' ' | cut -d ' ' -f 3` &> /dev/null
+				`docker images | grep tepseg-lab/docker-openwisp | tr -s ' ' | cut -d ' ' -f 3` &> /dev/null
 
 # Production
-USER = registry.gitlab.com/openwisp/docker-openwisp
+USER = registry.gitlab.com/tepseg-lab1/docker-openwisp
 TAG  = latest
 start: pull
 	printf '\e[1;34m%-6s\e[m\n' "Starting Services..."
@@ -86,7 +86,7 @@ stop:
 	docker-compose down --remove-orphans &> /dev/null
 
 # Publish
-USER = registry.gitlab.com/openwisp/docker-openwisp
+USER = registry.gitlab.com/tepseg-lab1/docker-openwisp
 TAG  = latest
 SKIP_BUILD = false
 SKIP_TESTS = false
@@ -101,11 +101,11 @@ publish:
 	for image in 'openwisp-base' 'openwisp-nfs' 'openwisp-api' 'openwisp-dashboard' \
 				 'openwisp-freeradius' 'openwisp-nginx' 'openwisp-openvpn' 'openwisp-postfix' \
 				 'openwisp-websocket' ; do \
-		docker tag openwisp/$${image}:latest $(USER)/$${image}:$(TAG); \
+		docker tag tepseg-lab/$${image}:latest $(USER)/$${image}:$(TAG); \
 		docker push $(USER)/$${image}:$(TAG); \
 		docker rmi $(USER)/$${image}:$(TAG); \
 		if [[ "$(TAG)" != "edge" ]] && [[ "$(TAG)" != "latest" ]]; then \
-			docker tag openwisp/$${image}:latest $(USER)/$${image}:latest; \
+			docker tag tepseg-lab/$${image}:latest $(USER)/$${image}:latest; \
 			docker push $(USER)/$${image}:latest; \
 			docker rmi $(USER)/$${image}:latest; \
 		fi \
