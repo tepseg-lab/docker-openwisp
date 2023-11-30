@@ -15,14 +15,15 @@ RUN apt-get update && \
     apt-get install --yes --no-install-recommends \
     gcc libpq-dev libjpeg-dev libffi-dev python3-dev \
     python3-pip libxml2-dev libxslt1-dev zlib1g-dev g++ procps \
-    git ssh
+    git ssh sudo
 
-RUN mkdir -p -m 0600 /root/.ssh /root/.ssh && \
-        ssh-keyscan github.com >> /root/.ssh/known_hosts
+ARG SSH_PRIVATE_KEY
+ENV SSH_PRIVATE_KEY="${SSH_PRIVATE_KEY}"
 
-ADD id_rsa /root/.ssh/id_rsa
-
-RUN chmod -R 400 /root/.ssh/id_rsa
+RUN mkdir -p -m 0600 /root/.ssh && \
+    echo "$SSH_PRIVATE_KEY" > /root/.ssh/id_rsa && \
+    chmod 400 /root/.ssh/id_rsa && \
+    ssh-keyscan github.com >> /root/.ssh/known_hosts
 
 RUN useradd --system --password '' --create-home --shell /bin/bash \
     --gid root --uid 1001 openwisp
@@ -73,7 +74,7 @@ RUN if [ "$OPENWISP_USERS_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade --force-reinstall ${OPENWISP_USERS_SOURCE}; \
     fi
 # TODO: Remove when next version of openwisp-utils is released
-ARG OPENWISP_UTILS_SOURCE="openwisp-utils[celery,rest] @ git+ssh://git@github.com/tepseg-lab/openwisp-utils.git@main "
+ARG OPENWISP_UTILS_SOURCE="openwisp-utils[celery,rest] @ git+ssh://git@github.com/tepseg-lab/openwisp-utils.git@main"
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_UTILS_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade --force-reinstall "${OPENWISP_UTILS_SOURCE}"; \
