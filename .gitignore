@@ -64,7 +64,6 @@ ENV/
 env.bak/
 target/
 venv.bak/
-.build.env
 .dev.env
 .mypy_cache/
 
