@@ -17,16 +17,7 @@ RUN apt-get update && \
     python3-pip libxml2-dev libxslt1-dev zlib1g-dev g++ procps \
     git ssh sudo
 
-ARG SSH_PRIVATE_KEY
-ENV SSH_PRIVATE_KEY="${SSH_PRIVATE_KEY}"
-
-RUN mkdir -p -m 0600 /root/.ssh && \
-    echo "$SSH_PRIVATE_KEY" > /root/.ssh/id_rsa && \
-    chmod 400 /root/.ssh/id_rsa && \
-    ssh-keyscan github.com >> /root/.ssh/known_hosts
-
-RUN useradd --system --password '' --create-home --shell /bin/bash \
-    --gid root --uid 1001 openwisp
+RUN useradd --system --password '' --create-home --shell /bin/bash --gid root --uid 1001 openwisp
 USER openwisp:root
 
 FROM system AS openwisp_python
@@ -36,16 +27,16 @@ ENV PYTHONPATH=/home/openwisp/.local/lib/python3.10/site-packages
 
 RUN pip install --no-cache-dir  --user --upgrade pip~=23.0.1
 # TODO: Remove when next version of openwisp-monitoring is released
-ARG OPENWISP_MONITORING_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-monitoring.git@main
+ARG OPENWISP_MONITORING_SOURCE=https://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@github.com/tepseg-lab/openwisp-monitoring.git
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_MONITORING_SOURCE}
-ARG OPENWISP_FIRMWARE_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-firmware-upgrader.git@main
+ARG OPENWISP_FIRMWARE_SOURCE=https://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@github.com/tepseg-lab/openwisp-firmware-upgrader.git
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_FIRMWARE_SOURCE}
-ARG OPENWISP_TOPOLOGY_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-network-topology.git@main
+ARG OPENWISP_TOPOLOGY_SOURCE=https://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@github.com/tepseg-lab/openwisp-network-topology.git
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_TOPOLOGY_SOURCE}
-ARG OPENWISP_RADIUS_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-radius.git@main
+ARG OPENWISP_RADIUS_SOURCE=https://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@github.com/tepseg-lab/openwisp-radius.git
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_RADIUS_SOURCE}
 
@@ -58,7 +49,7 @@ RUN if [ "$OPENWISP_IPAM_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade ${OPENWISP_IPAM_SOURCE}; \
     fi
 # TODO: Remove when next version of openwisp-controller is released
-ARG OPENWISP_CONTROLLER_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-controller.git@main
+ARG OPENWISP_CONTROLLER_SOURCE=https://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@github.com/tepseg-lab/openwisp-controller.git
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_CONTROLLER_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade ${OPENWISP_CONTROLLER_SOURCE}; \
@@ -68,13 +59,13 @@ ARG OPENWISP_NOTIFICATION_SOURCE=default
 RUN if [ "$OPENWISP_NOTIFICATION_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade ${OPENWISP_NOTIFICATION_SOURCE}; \
     fi
-ARG OPENWISP_USERS_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-users.git@main
+ARG OPENWISP_USERS_SOURCE=https://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@github.com/tepseg-lab/openwisp-users.git
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_USERS_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade --force-reinstall ${OPENWISP_USERS_SOURCE}; \
     fi
 # TODO: Remove when next version of openwisp-utils is released
-ARG OPENWISP_UTILS_SOURCE="openwisp-utils[celery,rest] @ git+ssh://git@github.com/tepseg-lab/openwisp-utils.git@main"
+ARG OPENWISP_UTILS_SOURCE="openwisp-utils[celery,rest] @ https://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@github.com/tepseg-lab/openwisp-utils.git"
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_UTILS_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade --force-reinstall "${OPENWISP_UTILS_SOURCE}"; \
