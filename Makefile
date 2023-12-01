@@ -1,24 +1,24 @@
-## Find documentation in README.md under
-## the heading "Makefile Options".
-#
-#SHELL := /bin/bash
-#.SILENT: clean pull start stop
-#
-#default: compose-build
-#
-## Pull
-#USER = registry.gitlab.com/tepseg-lab1/docker-openwisp
-#TAG  = latest
-#pull:
-#	printf '\e[1;34m%-6s\e[m\n' "Downloading OpenWISP images..."
-#	for image in 'openwisp-base' 'openwisp-nfs' 'openwisp-api' 'openwisp-dashboard' \
-#				 'openwisp-freeradius' 'openwisp-nginx' 'openwisp-openvpn' 'openwisp-postfix' \
-#				 'openwisp-websocket' ; do \
-#		docker pull --quiet $(USER)/$${image}:$(TAG) &> /dev/null; \
-#		docker tag  $(USER)/$${image}:$(TAG) tepseg-lab/$${image}:latest; \
-#	done
-#
-## Build
+# Find documentation in README.md under
+# the heading "Makefile Options".
+
+SHELL := /bin/bash
+.SILENT: clean pull start stop
+
+default: compose-build
+
+# Pull
+USER = registry.gitlab.com/tepseg-lab1/docker-openwisp
+TAG  = latest
+pull:
+	printf '\e[1;34m%-6s\e[m\n' "Downloading OpenWISP images..."
+	for image in 'openwisp-base' 'openwisp-nfs' 'openwisp-api' 'openwisp-dashboard' \
+				 'openwisp-freeradius' 'openwisp-nginx' 'openwisp-openvpn' 'openwisp-postfix' \
+				 'openwisp-websocket' ; do \
+		docker pull --quiet $(USER)/$${image}:$(TAG) &> /dev/null; \
+		docker tag  $(USER)/$${image}:$(TAG) tepseg-lab/$${image}:latest; \
+	done
+
+# Build
 #python-build: build.py
 #	python build.py change-secret-key
 #
@@ -70,22 +70,22 @@
 #				tepseg-lab/openwisp-nfs:latest \
 #				`docker images -f "dangling=true" -q` \
 #				`docker images | grep tepseg-lab/docker-openwisp | tr -s ' ' | cut -d ' ' -f 3` &> /dev/null
-#
-## Production
-#USER = registry.gitlab.com/tepseg-lab1/docker-openwisp
-#TAG  = latest
-#start: pull
-#	printf '\e[1;34m%-6s\e[m\n' "Starting Services..."
-#	docker-compose --log-level WARNING up -d
-#	printf '\e[1;32m%-6s\e[m\n' "Success: OpenWISP should be available at your dashboard domain in 2 minutes."
-#
-#stop:
-#	printf '\e[1;31m%-6s\e[m\n' "Stopping OpenWISP services..."
-#	docker-compose --log-level ERROR stop
-#	docker-compose --log-level ERROR down --remove-orphans
-#	docker-compose down --remove-orphans &> /dev/null
-#
-## Publish
+
+# Production
+USER = registry.gitlab.com/tepseg-lab1/docker-openwisp
+TAG  = latest
+start: pull
+	printf '\e[1;34m%-6s\e[m\n' "Starting Services..."
+	docker-compose --log-level WARNING up -d
+	printf '\e[1;32m%-6s\e[m\n' "Success: OpenWISP should be available at your dashboard domain in 2 minutes."
+
+stop:
+	printf '\e[1;31m%-6s\e[m\n' "Stopping OpenWISP services..."
+	docker-compose --log-level ERROR stop
+	docker-compose --log-level ERROR down --remove-orphans
+	docker-compose down --remove-orphans &> /dev/null
+
+# Publish
 #USER = registry.gitlab.com/tepseg-lab1/docker-openwisp
 #TAG  = latest
 #SKIP_BUILD = false
