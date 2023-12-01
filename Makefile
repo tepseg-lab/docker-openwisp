@@ -33,6 +33,7 @@ base-build:
 	docker build --tag tepseg-lab/openwisp-base:intermedia-python \
 	             --file ./images/openwisp_base/Dockerfile \
 	             --target PYTHON ./images/ \
+	             --build-arg SSH_PRIVATE_KEY="$$(cat .build.env | grep SSH_PRIVATE_KEY | cut -d '=' -f 2)" \
 	             $$BUILD_ARGS; \
 	docker build --tag tepseg-lab/openwisp-base:latest \
 	             --file ./images/openwisp_base/Dockerfile ./images/ \
