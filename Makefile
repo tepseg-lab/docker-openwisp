@@ -77,7 +77,7 @@ USER = registry.gitlab.com/tepseg-lab1/docker-openwisp
 TAG  = latest
 start: pull
 	printf '\e[1;34m%-6s\e[m\n' "Starting Services..."
-	docker-compose --log-level WARNING --env-file .env up -d
+	docker-compose --log-level WARNING up -d
 	printf '\e[1;32m%-6s\e[m\n' "Success: OpenWISP should be available at your dashboard domain in 2 minutes."
 
 stop:

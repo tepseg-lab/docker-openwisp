@@ -11,8 +11,6 @@ services:
         DASHBOARD_APP_PORT: 8000
     env_file:
       - .env
-    environment:
-      - SSH_PRIVATE_KEY=${SSH_PRIVATE_KEY}
     volumes:
       - openwisp_static:/opt/openwisp/static
       - openwisp_media:/opt/openwisp/media
