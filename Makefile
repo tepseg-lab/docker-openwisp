@@ -33,7 +33,7 @@ base-build:
 	docker build --tag tepseg-lab/openwisp-base:intermedia-python \
 	             --file ./images/openwisp_base/Dockerfile \
 	             --target PYTHON ./images/ \
-	             --build-arg SSH_PRIVATE_KEY="$$(cat .build.env | grep SSH_PRIVATE_KEY | cut -d '=' -f 2)" \
+	             --build-arg SSH_PRIVATE_KEY="$$(cat .env | grep SSH_PRIVATE_KEY | cut -d '=' -f 2)" \
 	             $$BUILD_ARGS; \
 	docker build --tag tepseg-lab/openwisp-base:latest \
 	             --file ./images/openwisp_base/Dockerfile ./images/ \
@@ -77,7 +77,7 @@ USER = registry.gitlab.com/tepseg-lab1/docker-openwisp
 TAG  = latest
 start: pull
 	printf '\e[1;34m%-6s\e[m\n' "Starting Services..."
-	docker-compose --log-level WARNING up -d
+	docker-compose --log-level WARNING --env-file .env up -d
 	printf '\e[1;32m%-6s\e[m\n' "Success: OpenWISP should be available at your dashboard domain in 2 minutes."
 
 stop:
