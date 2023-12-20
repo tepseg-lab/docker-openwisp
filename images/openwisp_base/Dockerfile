@@ -17,6 +17,12 @@ RUN apt-get update && \
     python3-pip libxml2-dev libxslt1-dev zlib1g-dev g++ procps \
     git ssh
 
+RUN useradd --system --password '' --create-home --shell /bin/bash \
+    --gid root --uid 1001 openwisp
+USER openwisp:root
+
+FROM system AS openwisp_python
+
 ARG SSH_PRIVATE_KEY
 ENV SSH_PRIVATE_KEY="${SSH_PRIVATE_KEY}"
 
@@ -24,12 +30,6 @@ RUN mkdir -p -m 0600 /root/.ssh && \
     echo "$SSH_PRIVATE_KEY" > /root/.ssh/id_rsa && \
     chmod 400 /root/.ssh/id_rsa && \
     ssh-keyscan github.com >> /root/.ssh/known_hosts
-
-RUN useradd --system --password '' --create-home --shell /bin/bash \
-    --gid root --uid 1001 openwisp
-USER openwisp:root
-
-FROM system AS openwisp_python
 
 ENV PATH="${PATH}:/home/openwisp/.local/bin"
 ENV PYTHONPATH=/home/openwisp/.local/lib/python3.10/site-packages
