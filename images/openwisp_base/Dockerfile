@@ -23,9 +23,14 @@ COPY id_rsa /root/.ssh/id_rsa
 RUN chmod 600 /root/.ssh/id_rsa && \
     ssh-keyscan github.com >> /root/.ssh/known_hosts
 
-#RUN useradd --system --password '' --create-home --shell /bin/bash \
-#    --gid root --uid 1001 openwisp
-#USER openwisp:root
+RUN useradd --system --password '' --create-home --shell /bin/bash \
+    --gid root --uid 1001 openwisp
+
+USER openwisp:root
+
+RUN apt-get update && apt-get install -y sudo && \
+    usermod -aG sudo openwisp && \
+    echo "openwisp ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/openwisp
 
 FROM system AS openwisp_python
 
@@ -92,10 +97,10 @@ RUN pip install --no-cache-dir --user --upgrade -r /tmp/openwisp-deploy-requirem
 
 FROM system
 
-COPY --from=openwisp_python /root/.local/ /usr/local
-COPY ./common/ /opt/openwisp/
+COPY --from=openwisp_python --chown=openwisp:root /home/openwisp/.local/ /usr/local
+COPY --chown=openwisp:root ./common/ /opt/openwisp/
 RUN mkdir /opt/openwisp/static && mkdir /opt/openwisp/media && mkdir /opt/openwisp/private && \
-    mkdir /opt/openwisp/logs && chmod -R a+rw /opt/openwisp
+    mkdir /opt/openwisp/logs
 
 ENV DASHBOARD_APP_SERVICE=dashboard \
     PYTHONUNBUFFERED=1 \
