@@ -5,8 +5,10 @@ FROM python:3.10-slim-bullseye AS system
 # 2. openwisp-radius/weasyprint: libcairo2 libpangocairo-1.0
 # 3. openwisp-monitoring: fping gdal-bin
 # hadolint ignore=DL3008
-RUN apt-get update && \
-    apt-get install --yes --no-install-recommends \
+
+RUN apt-get update
+
+RUN apt-get install --yes --no-install-recommends \
     libcairo2 apt-utils libpangocairo-1.0-0 \
     gdal-bin gettext fping && \
     rm -rf /var/lib/apt/lists/* /root/.cache/pip/* /tmp/*
@@ -17,69 +19,65 @@ RUN apt-get update && \
     python3-pip libxml2-dev libxslt1-dev zlib1g-dev g++ procps \
     git ssh
 
-RUN useradd --system --password '' --create-home --shell /bin/bash \
-    --gid root --uid 1001 openwisp
-USER openwisp:root
+COPY id_rsa /root/.ssh/id_rsa
+RUN chmod 600 /root/.ssh/id_rsa && \
+    ssh-keyscan github.com >> /root/.ssh/known_hosts
+
+#RUN useradd --system --password '' --create-home --shell /bin/bash \
+#    --gid root --uid 1001 openwisp
+#USER openwisp:root
 
 FROM system AS openwisp_python
 
-ARG SSH_PRIVATE_KEY
-ENV SSH_PRIVATE_KEY="${SSH_PRIVATE_KEY}"
-
-RUN mkdir -p -m 0600 /root/.ssh && \
-    echo "$SSH_PRIVATE_KEY" > /root/.ssh/id_rsa && \
-    chmod 400 /root/.ssh/id_rsa && \
-    ssh-keyscan github.com >> /root/.ssh/known_hosts
-
-ENV PATH="${PATH}:/home/openwisp/.local/bin"
-ENV PYTHONPATH=/home/openwisp/.local/lib/python3.10/site-packages
+ENV PATH="${PATH}:/root/.local/bin"
+ENV PYTHONPATH=/root/.local/lib/python3.10/site-packages
 
 RUN pip install --no-cache-dir  --user --upgrade pip~=23.0.1
 # TODO: Remove when next version of openwisp-monitoring is released
-ARG OPENWISP_MONITORING_SOURCE=https://github.com/openwisp/openwisp-monitoring/tarball/139e936322c8f85348ec9f6dd06747653feef039
+ARG OPENWISP_MONITORING_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-monitoring.git@main
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_MONITORING_SOURCE}
-ARG OPENWISP_FIRMWARE_SOURCE=https://github.com/openwisp/openwisp-firmware-upgrader/tarball/f1b0397944489db857cde986c2933675b3758001
+ARG OPENWISP_FIRMWARE_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-firmware-upgrader.git@main
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_FIRMWARE_SOURCE}
-ARG OPENWISP_TOPOLOGY_SOURCE=https://github.com/openwisp/openwisp-network-topology/tarball/59331f48da68f74612973c19ecf0175e793280be
+ARG OPENWISP_TOPOLOGY_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-network-topology.git@main
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_TOPOLOGY_SOURCE}
-ARG OPENWISP_RADIUS_SOURCE=https://github.com/openwisp/openwisp-radius/tarball/04bed55a5ec5bc7e181df49deb75e24ee369b792
+ARG OPENWISP_RADIUS_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-radius.git@main
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_RADIUS_SOURCE}
 
 # here we try to install custom versions of the modules only if the
 # supplied argument does not equal the default value, because
 # otherwise these modules will have already been installed above
-ARG OPENWISP_IPAM_SOURCE=default
+ARG OPENWISP_IPAM_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-ipam.git@main
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_IPAM_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade ${OPENWISP_IPAM_SOURCE}; \
     fi
 # TODO: Remove when next version of openwisp-controller is released
-ARG OPENWISP_CONTROLLER_SOURCE=https://github.com/openwisp/openwisp-controller/tarball/cb6f91ec0e3a15e756dfd3e93be283cdb4724f37
+ARG OPENWISP_CONTROLLER_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-controller.git@main
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_CONTROLLER_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade ${OPENWISP_CONTROLLER_SOURCE}; \
     fi
-ARG OPENWISP_NOTIFICATION_SOURCE=default
+ARG OPENWISP_NOTIFICATION_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-notifications.git@main
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_NOTIFICATION_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade ${OPENWISP_NOTIFICATION_SOURCE}; \
     fi
-ARG OPENWISP_USERS_SOURCE=https://github.com/openwisp/openwisp-users/tarball/4661fd0b151c5c186da302ba0aea870d036d5d90
+ARG OPENWISP_USERS_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-users.git@main
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_USERS_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade --force-reinstall ${OPENWISP_USERS_SOURCE}; \
     fi
 # TODO: Remove when next version of openwisp-utils is released
-ARG OPENWISP_UTILS_SOURCE="openwisp-utils[celery,rest] @ https://github.com/openwisp/openwisp-utils/tarball/746b14618dc1df922224f8cb3f258bc3f788e0e1 "
+ARG OPENWISP_UTILS_SOURCE="openwisp-utils[celery,rest] @ git+ssh://git@github.com/tepseg-lab/openwisp-utils.git@main "
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_UTILS_SOURCE" != "default" ] ; then \
         pip install --no-cache-dir --user --upgrade --force-reinstall "${OPENWISP_UTILS_SOURCE}"; \
     fi
-ARG DJANGO_X509_SOURCE=default
+ARG DJANGO_X509_SOURCE=git+ssh://git@github.com/tepseg-lab/django-x509.git@main
 # hadolint ignore=DL3013
 RUN if [ "$DJANGO_X509_SOURCE" != "default" ]; then \
         pip install --no-cache-dir --user --upgrade --force-reinstall ${DJANGO_X509_SOURCE}; \
@@ -89,15 +87,15 @@ ARG DJANGO_SOURCE=django~=4.0.10
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir --user --upgrade ${DJANGO_SOURCE}
 
-COPY ./openwisp_base/requirements.txt /tmp/openwisp-deploy-requirements.txt
+COPY requirements.txt /tmp/openwisp-deploy-requirements.txt
 RUN pip install --no-cache-dir --user --upgrade -r /tmp/openwisp-deploy-requirements.txt
 
 FROM system
 
-COPY --from=openwisp_python --chown=openwisp:root /home/openwisp/.local/ /usr/local
-COPY --chown=openwisp:root ./common/ /opt/openwisp/
+COPY --from=openwisp_python /root/.local/ /usr/local
+COPY ./common/ /opt/openwisp/
 RUN mkdir /opt/openwisp/static && mkdir /opt/openwisp/media && mkdir /opt/openwisp/private && \
-    mkdir /opt/openwisp/logs && chown -R openwisp:root /opt/openwisp
+    mkdir /opt/openwisp/logs && chmod -R a+rw /opt/openwisp
 
 ENV DASHBOARD_APP_SERVICE=dashboard \
     PYTHONUNBUFFERED=1 \

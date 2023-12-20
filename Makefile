@@ -11,7 +11,7 @@ USER = registry.gitlab.com/tepseg-lab1/docker-openwisp
 TAG  = latest
 pull:
 	printf '\e[1;34m%-6s\e[m\n' "Downloading OpenWISP images..."
-	for image in 'openwisp-base' 'openwisp-nfs' 'openwisp-api' 'openwisp-dashboard' \
+	for image in 'tepseg-base' 'openwisp-nfs' 'openwisp-api' 'openwisp-dashboard' \
 				 'openwisp-freeradius' 'openwisp-nginx' 'openwisp-openvpn' 'openwisp-postfix' \
 				 'openwisp-websocket' ; do \
 		docker pull --quiet $(USER)/$${image}:$(TAG) &> /dev/null; \
@@ -27,15 +27,15 @@ base-build:
 	for build_arg in $$BUILD_ARGS_FILE; do \
 	    BUILD_ARGS+=" --build-arg $$build_arg"; \
 	done; \
-	docker build --tag tepseg-lab/openwisp-base:intermedia-system \
+	docker build --tag tepseg-lab/tepseg-base:intermedia-system \
 	             --file ./images/openwisp_base/Dockerfile \
 	             --target SYSTEM ./images/; \
-	docker build --tag tepseg-lab/openwisp-base:intermedia-python \
+	docker build --tag tepseg-lab/tepseg-base:intermedia-python \
 	             --file ./images/openwisp_base/Dockerfile \
 	             --target PYTHON ./images/ \
 	             --build-arg SSH_PRIVATE_KEY="$$(cat .env | grep SSH_PRIVATE_KEY | cut -d '=' -f 2)" \
 	             $$BUILD_ARGS; \
-	docker build --tag tepseg-lab/openwisp-base:latest \
+	docker build --tag tepseg-lab/tepseg-base:latest \
 	             --file ./images/openwisp_base/Dockerfile ./images/ \
 	             $$BUILD_ARGS
 
@@ -65,9 +65,9 @@ clean:
 	docker-compose stop &> /dev/null
 	docker-compose down --remove-orphans --volumes --rmi all &> /dev/null
 	docker-compose rm -svf &> /dev/null
-	docker rmi --force tepseg-lab/openwisp-base:latest \
-				tepseg-lab/openwisp-base:intermedia-system \
-				tepseg-lab/openwisp-base:intermedia-python \
+	docker rmi --force tepseg-lab/tepseg-base:latest \
+				tepseg-lab/tepseg-base:intermedia-system \
+				tepseg-lab/tepseg-base:intermedia-python \
 				tepseg-lab/openwisp-nfs:latest \
 				`docker images -f "dangling=true" -q` \
 				`docker images | grep tepseg-lab/docker-openwisp | tr -s ' ' | cut -d ' ' -f 3` &> /dev/null
@@ -99,7 +99,7 @@ publish:
 	if [[ "$(SKIP_TESTS)" == "false" ]]; then \
 		make runtests; \
 	fi
-	for image in 'openwisp-base' 'openwisp-nfs' 'openwisp-api' 'openwisp-dashboard' \
+	for image in 'tepseg-base' 'openwisp-nfs' 'openwisp-api' 'openwisp-dashboard' \
 				 'openwisp-freeradius' 'openwisp-nginx' 'openwisp-openvpn' 'openwisp-postfix' \
 				 'openwisp-websocket' ; do \
 		docker tag tepseg-lab/$${image}:latest $(USER)/$${image}:$(TAG); \
