@@ -26,31 +26,27 @@ RUN chmod 600 /root/.ssh/id_rsa && \
 RUN useradd --system --password '' --create-home --shell /bin/bash \
     --gid root --uid 1001 openwisp
 
-USER openwisp:root
-
-RUN apt-get update && apt-get install -y sudo && \
-    usermod -aG sudo openwisp && \
-    echo "openwisp ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/openwisp
+USER root:root
 
 FROM system AS openwisp_python
 
-ENV PATH="${PATH}:/root/.local/bin"
-ENV PYTHONPATH=/root/.local/lib/python3.10/site-packages
+ENV PATH="${PATH}:/home/openwisp/.local/bin"
+ENV PYTHONPATH=/home/openwisp/.local/lib/python3.10/site-packages
 
-RUN pip install --no-cache-dir  --user --upgrade pip~=23.0.1
+RUN pip install --no-cache-dir  --prefix='/install' --upgrade pip~=23.0.1
 # TODO: Remove when next version of openwisp-monitoring is released
 ARG OPENWISP_MONITORING_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-monitoring.git@main
 # hadolint ignore=DL3013
-RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_MONITORING_SOURCE}
+RUN pip install --no-cache-dir --prefix='/install' --upgrade ${OPENWISP_MONITORING_SOURCE}
 ARG OPENWISP_FIRMWARE_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-firmware-upgrader.git@main
 # hadolint ignore=DL3013
-RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_FIRMWARE_SOURCE}
+RUN pip install --no-cache-dir --prefix='/install' --upgrade ${OPENWISP_FIRMWARE_SOURCE}
 ARG OPENWISP_TOPOLOGY_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-network-topology.git@main
 # hadolint ignore=DL3013
-RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_TOPOLOGY_SOURCE}
+RUN pip install --no-cache-dir --prefix='/install' --upgrade ${OPENWISP_TOPOLOGY_SOURCE}
 ARG OPENWISP_RADIUS_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-radius.git@main
 # hadolint ignore=DL3013
-RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_RADIUS_SOURCE}
+RUN pip install --no-cache-dir --prefix='/install' --upgrade ${OPENWISP_RADIUS_SOURCE}
 
 # here we try to install custom versions of the modules only if the
 # supplied argument does not equal the default value, because
@@ -58,47 +54,47 @@ RUN pip install --no-cache-dir --user --upgrade ${OPENWISP_RADIUS_SOURCE}
 ARG OPENWISP_IPAM_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-ipam.git@main
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_IPAM_SOURCE" != "default" ] ; then \
-        pip install --no-cache-dir --user --upgrade ${OPENWISP_IPAM_SOURCE}; \
+        pip install --no-cache-dir --prefix='/install' --upgrade ${OPENWISP_IPAM_SOURCE}; \
     fi
 # TODO: Remove when next version of openwisp-controller is released
 ARG OPENWISP_CONTROLLER_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-controller.git@main
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_CONTROLLER_SOURCE" != "default" ] ; then \
-        pip install --no-cache-dir --user --upgrade ${OPENWISP_CONTROLLER_SOURCE}; \
+        pip install --no-cache-dir --prefix='/install' --upgrade ${OPENWISP_CONTROLLER_SOURCE}; \
     fi
 ARG OPENWISP_NOTIFICATION_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-notifications.git@main
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_NOTIFICATION_SOURCE" != "default" ] ; then \
-        pip install --no-cache-dir --user --upgrade ${OPENWISP_NOTIFICATION_SOURCE}; \
+        pip install --no-cache-dir --prefix='/install' --upgrade ${OPENWISP_NOTIFICATION_SOURCE}; \
     fi
 ARG OPENWISP_USERS_SOURCE=git+ssh://git@github.com/tepseg-lab/openwisp-users.git@main
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_USERS_SOURCE" != "default" ] ; then \
-        pip install --no-cache-dir --user --upgrade --force-reinstall ${OPENWISP_USERS_SOURCE}; \
+        pip install --no-cache-dir --prefix='/install' --upgrade --force-reinstall ${OPENWISP_USERS_SOURCE}; \
     fi
 # TODO: Remove when next version of openwisp-utils is released
 ARG OPENWISP_UTILS_SOURCE="openwisp-utils[celery,rest] @ git+ssh://git@github.com/tepseg-lab/openwisp-utils.git@main "
 # hadolint ignore=DL3013
 RUN if [ "$OPENWISP_UTILS_SOURCE" != "default" ] ; then \
-        pip install --no-cache-dir --user --upgrade --force-reinstall "${OPENWISP_UTILS_SOURCE}"; \
+        pip install --no-cache-dir --prefix='/install' --upgrade --force-reinstall "${OPENWISP_UTILS_SOURCE}"; \
     fi
 ARG DJANGO_X509_SOURCE=git+ssh://git@github.com/tepseg-lab/django-x509.git@main
 # hadolint ignore=DL3013
 RUN if [ "$DJANGO_X509_SOURCE" != "default" ]; then \
-        pip install --no-cache-dir --user --upgrade --force-reinstall ${DJANGO_X509_SOURCE}; \
+        pip install --no-cache-dir --prefix='/install' --upgrade --force-reinstall ${DJANGO_X509_SOURCE}; \
     fi
 
 ARG DJANGO_SOURCE=django~=4.0.10
 # hadolint ignore=DL3013
-RUN pip install --no-cache-dir --user --upgrade ${DJANGO_SOURCE}
+RUN pip install --no-cache-dir --prefix='/install' --upgrade ${DJANGO_SOURCE}
 
 COPY requirements.txt /tmp/openwisp-deploy-requirements.txt
-RUN pip install --no-cache-dir --user --upgrade -r /tmp/openwisp-deploy-requirements.txt
+RUN pip install --no-cache-dir --prefix='/install' --upgrade -r /tmp/openwisp-deploy-requirements.txt
 
 FROM system
 
-COPY --from=openwisp_python --chown=openwisp:root /home/openwisp/.local/ /usr/local
-COPY --chown=openwisp:root ./common/ /opt/openwisp/
+COPY --from=openwisp_python /install /usr/local
+COPY ./common/ /opt/openwisp/
 RUN mkdir /opt/openwisp/static && mkdir /opt/openwisp/media && mkdir /opt/openwisp/private && \
     mkdir /opt/openwisp/logs
 
