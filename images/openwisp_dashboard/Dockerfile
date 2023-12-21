@@ -4,12 +4,12 @@ FROM tepseg-lab/tepseg-base:latest
 WORKDIR /opt/openwisp/
 
 # Location: /opt/openwisp/
-COPY load_init_data.py \
-    openvpn.json \
+COPY ./load_init_data.py \
+    ./openvpn.json \
     /opt/openwisp/
 # Location: /opt/openwisp/openwisp/
 COPY module_settings.py \
-    urls.py \
+    ./urls.py \
     /opt/openwisp/openwisp/
 
 CMD ["bash", "init_command.sh"]
