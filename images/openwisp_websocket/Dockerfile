@@ -3,10 +3,10 @@ FROM tepseg-lab/tepseg-base:latest
 
 WORKDIR /opt/openwisp/
 
-COPY ./openwisp_websocket/daphne.conf \
+COPY daphne.conf \
      /opt/openwisp/
-COPY ./openwisp_websocket/module_settings.py \
-     ./openwisp_websocket/urls.py \
+COPY module_settings.py \
+     urls.py \
      /opt/openwisp/openwisp/
 
 ARG WEBSOCKET_APP_PORT=8002
