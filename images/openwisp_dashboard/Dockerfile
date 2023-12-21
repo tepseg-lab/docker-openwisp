@@ -1,14 +1,15 @@
 # hadolint ignore=DL3007
 FROM tepseg-lab/tepseg-base:latest
+
 WORKDIR /opt/openwisp/
 
 # Location: /opt/openwisp/
-COPY ./load_init_data.py \
-    ./openvpn.json \
+COPY ./openwisp_dashboard/load_init_data.py \
+    ./openwisp_dashboard/openvpn.json \
     /opt/openwisp/
 # Location: /opt/openwisp/openwisp/
-COPY ./module_settings.py \
-    ./urls.py \
+COPY ./openwisp_dashboard/module_settings.py \
+    ./openwisp_dashboard/urls.py \
     /opt/openwisp/openwisp/
 
 CMD ["bash", "init_command.sh"]

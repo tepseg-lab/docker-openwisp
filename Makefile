@@ -11,9 +11,9 @@ USER = registry.gitlab.com/tepseg-lab1/docker-openwisp
 TAG  = latest
 pull:
 	printf '\e[1;34m%-6s\e[m\n' "Downloading OpenWISP images..."
-	for image in 'tepseg-base' 'openwisp-nfs' 'openwisp-api' 'openwisp-dashboard' \
+	for image in 'tepseg-base' 'openwisp-nfs' 'tepseg-api' 'tepseg-dashboard' \
 				 'openwisp-freeradius' 'openwisp-nginx' 'openwisp-openvpn' 'openwisp-postfix' \
-				 'openwisp-websocket' ; do \
+				 'tepseg-websocket' ; do \
 		docker pull --quiet $(USER)/$${image}:$(TAG) &> /dev/null; \
 		docker tag  $(USER)/$${image}:$(TAG) openwisp/$${image}:latest; \
 		docker tag  $(USER)/$${image}:$(TAG) tepseg-lab/$${image}:latest; \
@@ -110,9 +110,9 @@ publish:
 	if [[ "$(SKIP_TESTS)" == "false" ]]; then \
 		make runtests; \
 	fi
-	for image in 'tepseg-base' 'openwisp-nfs' 'openwisp-api' 'openwisp-dashboard' \
+	for image in 'tepseg-base' 'openwisp-nfs' 'tepseg-api' 'tepseg-dashboard' \
 				 'openwisp-freeradius' 'openwisp-nginx' 'openwisp-openvpn' 'openwisp-postfix' \
-				 'openwisp-websocket' ; do \
+				 'tepseg-websocket' ; do \
 		docker tag openwisp/$${image}:latest $(USER)/$${image}:$(TAG); \
 		docker tag tepseg-lab/$${image}:latest $(USER)/$${image}:$(TAG); \
 		docker push $(USER)/$${image}:$(TAG); \

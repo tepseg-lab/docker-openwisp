@@ -3,8 +3,8 @@ FROM tepseg-lab/tepseg-base:latest
 
 WORKDIR /opt/openwisp/
 
-COPY ./urls.py \
-    ./module_settings.py \
+COPY ./openwisp_api/urls.py \
+    ./openwisp_api/module_settings.py \
     /opt/openwisp/openwisp/
 
 CMD ["bash", "init_command.sh"]
