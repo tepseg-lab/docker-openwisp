@@ -24,9 +24,8 @@ RUN chmod 600 /root/.ssh/id_rsa && \
     ssh-keyscan github.com >> /root/.ssh/known_hosts
 
 RUN useradd --system --password '' --create-home --shell /bin/bash \
-    --gid root --uid 1001 openwisp
-
-USER root:root
+   --gid root --groups sudo --uid 1001 openwisp
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 FROM system AS openwisp_python
 

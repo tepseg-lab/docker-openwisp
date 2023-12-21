@@ -3,12 +3,13 @@ FROM tepseg-lab/tepseg-base:latest
 
 WORKDIR /opt/openwisp/
 
-COPY --chown=openwisp:root  ./common/ \
-    ./openwisp_websocket/daphne.conf \
-    /opt/openwisp/
-COPY --chown=openwisp:root  ./openwisp_websocket/module_settings.py \
-    ./openwisp_websocket/urls.py \
-    /opt/openwisp/openwisp/
+#COPY ./common/ \
+
+COPY ./daphne.conf \
+     /opt/openwisp/
+COPY ./module_settings.py \
+     ./urls.py \
+     /opt/openwisp/openwisp/
 
 ARG WEBSOCKET_APP_PORT=8002
 ENV MODULE_NAME=websocket \

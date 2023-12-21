@@ -3,12 +3,12 @@ FROM tepseg-lab/tepseg-base:latest
 WORKDIR /opt/openwisp/
 
 # Location: /opt/openwisp/
-COPY --chown=openwisp:root ./openwisp_dashboard/load_init_data.py \
-    ./openwisp_dashboard/openvpn.json \
+COPY ./load_init_data.py \
+    ./openvpn.json \
     /opt/openwisp/
 # Location: /opt/openwisp/openwisp/
-COPY --chown=openwisp:root ./openwisp_dashboard/module_settings.py \
-    ./openwisp_dashboard/urls.py \
+COPY ./module_settings.py \
+    ./urls.py \
     /opt/openwisp/openwisp/
 
 CMD ["bash", "init_command.sh"]
