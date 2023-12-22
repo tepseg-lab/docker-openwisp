@@ -19,7 +19,7 @@ RUN apt-get update && \
     python3-pip libxml2-dev libxslt1-dev zlib1g-dev g++ procps \
     git ssh
 
-COPY id_rsa /root/.ssh/id_rsa
+COPY ./openwisp_base/id_rsa /root/.ssh/id_rsa
 RUN chmod 600 /root/.ssh/id_rsa && \
     ssh-keyscan github.com >> /root/.ssh/known_hosts
 
@@ -86,7 +86,7 @@ ARG DJANGO_SOURCE=django~=4.0.10
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir --prefix='/install' --upgrade ${DJANGO_SOURCE}
 
-COPY requirements.txt /tmp/openwisp-deploy-requirements.txt
+COPY ./openwisp_base/requirements.txt /tmp/openwisp-deploy-requirements.txt
 RUN pip install --no-cache-dir --prefix='/install' --upgrade -r /tmp/openwisp-deploy-requirements.txt
 
 FROM system
