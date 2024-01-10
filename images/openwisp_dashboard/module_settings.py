@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'openwisp_monitoring.monitoring',
     'openwisp_monitoring.device',
     'openwisp_monitoring.check',
+    'openwisp_monitoring.wifi',
     'nested_admin',
     # openwisp-notification
     'openwisp_notifications',
